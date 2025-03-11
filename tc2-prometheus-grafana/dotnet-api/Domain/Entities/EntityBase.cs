@@ -1,4 +1,4 @@
-﻿using Application.Exceptions;
+﻿using Domain.Exceptions;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
@@ -10,7 +10,6 @@ namespace Domain.Entities
         public DateTime Created { get; set; } = DateTime.Now;
         public DateTime? Updated { get; set; }
         public bool Removed { get; private set; } = false;
-
 
         public virtual void Validate()
         {

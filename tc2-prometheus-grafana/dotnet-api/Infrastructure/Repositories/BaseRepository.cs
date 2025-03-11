@@ -7,12 +7,12 @@ namespace Infrastructure.Repositories
 {
     public abstract class BaseRepository<T> : IRepository<T> where T : EntityBase
     {
-        protected readonly OnlyWriteDbContext onlyWriteDbContext;
-        protected readonly OnlyReadDbContext onlyReadDbContext;
+        protected readonly DbContext onlyWriteDbContext;
+        protected readonly DbContext onlyReadDbContext;
         protected readonly DbSet<T> onlyReadDbSet;
         protected readonly DbSet<T> onlyWriteDbSet;
 
-        protected BaseRepository(OnlyWriteDbContext onlyWriteDbContext, OnlyReadDbContext onlyReadDbContext)
+        protected BaseRepository(DbContext onlyWriteDbContext, DbContext onlyReadDbContext)
         {
             this.onlyWriteDbContext = onlyWriteDbContext;
             this.onlyReadDbContext = onlyReadDbContext;

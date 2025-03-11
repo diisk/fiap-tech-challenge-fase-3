@@ -1,0 +1,6 @@
+@Contato.Api_HostAddress = http://localhost:5241
+
+GET {{Contato.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -2,9 +2,23 @@ global:
   scrape_interval: 5s
 
 scrape_configs:
-  - job_name: 'aspnet-metrics'
+  - job_name: 'auth-metrics'
     metrics_path: '/metrics'
     static_configs:
       - targets:
         - 'host.docker.internal:8080'
+    scheme: 'http'
+
+  - job_name: 'area-metrics'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+        - 'host.docker.internal:8081'
+    scheme: 'http'
+
+  - job_name: 'contato-metrics'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets:
+        - 'host.docker.internal:8082'
     scheme: 'http'

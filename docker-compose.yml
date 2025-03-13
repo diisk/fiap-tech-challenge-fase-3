@@ -1,27 +1,35 @@
 services:
-  migrations:
+  rabbitmq:
+    image: masstransit/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  # Areas API
+  areas-migrations:
     build:
-      context: ./dotnet-api/
+      context: ./areas-api/
       dockerfile: dockerfile-migrations
-    image: migrations-image
+    image: areas-migrations-image
     restart: "no"
     depends_on:
-      mysql:
+      areas-mysql:
         condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__ConnectionString=Server=mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+      - ConnectionStrings__ConnectionString=Server=areas-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
     networks:
       - app-network
-  mysql:
+
+  areas-mysql:
     image: mysql:8.0
     ports:
-      - "3307:3306"
+      - "3308:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=tc1_contatos_regionais
     volumes:
-      - mysql_data:/var/lib/mysql
+      - areas_mysql_data:/var/lib/mysql
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 10s
@@ -29,26 +37,121 @@ services:
       retries: 5
     networks:
       - app-network
-  api:
+
+  areas-api:
     build:
-      context: ./dotnet-api/
-    image: api-image
+      context: ./areas-api/
+    image: areas-api-image
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__ConnectionString=Server=mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+      - ConnectionStrings__ConnectionString=Server=areas-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
     depends_on:
-      mysql:
+      areas-mysql:
         condition: service_healthy
     restart: always
     networks:
       - app-network
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
+
+  # Auth API
+  auth-migrations:
+    build:
+      context: ./auth-api/
+      dockerfile: dockerfile-migrations
+    image: auth-migrations-image
+    restart: "no"
+    depends_on:
+      auth-mysql:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__ConnectionString=Server=auth-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+    networks:
+      - app-network
+
+  auth-mysql:
+    image: mysql:8.0
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=tc1_contatos_regionais
+    volumes:
+      - auth_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  auth-api:
+    build:
+      context: ./auth-api/
+    image: auth-api-image
+    ports:
+      - "8082:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__ConnectionString=Server=auth-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+    depends_on:
+      auth-mysql:
+        condition: service_healthy
+    restart: always
+    networks:
+      - app-network
+
+  # Contatos API
+  contatos-migrations:
+    build:
+      context: ./contatos-api/
+      dockerfile: dockerfile-migrations
+    image: contatos-migrations-image
+    restart: "no"
+    depends_on:
+      contatos-mysql:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__ConnectionString=Server=contatos-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+    networks:
+      - app-network
+
+  contatos-mysql:
+    image: mysql:8.0
+    ports:
+      - "3310:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=tc1_contatos_regionais
+    volumes:
+      - contatos_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  contatos-api:
+    build:
+      context: ./contatos-api/
+    image: contatos-api-image
+    ports:
+      - "8083:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__ConnectionString=Server=contatos-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+    depends_on:
+      contatos-mysql:
+        condition: service_healthy
+    restart: always
+    networks:
+      - app-network
+
   prometheus:
     image: prom/prometheus:latest
     volumes:
@@ -56,7 +159,9 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - api
+      - areas-api
+      - auth-api
+      - contatos-api
     networks:
       - app-network
     healthcheck:
@@ -64,6 +169,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+
   grafana:
     image: grafana/grafana:latest
     ports:
@@ -80,7 +186,9 @@ services:
 
 volumes:
   grafana_data:
-  mysql_data:
+  areas_mysql_data:
+  auth_mysql_data:
+  contatos_mysql_data:
 
 networks:
   app-network:

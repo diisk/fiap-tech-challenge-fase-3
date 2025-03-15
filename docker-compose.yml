@@ -47,6 +47,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__ConnectionString=Server=areas-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+      - RABBITMQ_HOST=host.docker.internal
     depends_on:
       areas-mysql:
         condition: service_healthy
@@ -96,6 +97,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__ConnectionString=Server=auth-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+      - RABBITMQ_HOST=host.docker.internal
     depends_on:
       auth-mysql:
         condition: service_healthy
@@ -145,6 +147,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__ConnectionString=Server=contatos-mysql;Database=tc1_contatos_regionais;User=root;Password=123456;Port=3306;
+      - RABBITMQ_HOST=host.docker.internal
     depends_on:
       contatos-mysql:
         condition: service_healthy

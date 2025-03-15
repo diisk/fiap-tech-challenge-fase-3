@@ -1,16 +1,12 @@
 using API.Middlewares;
 using Application.DTOs.AreaDtos;
-using Application.DTOs.Auth;
-using Application.DTOs.ContatoDtos;
 using Application.Interfaces;
 using Application.Mappers;
 using Application.Mappers.AreaMappers;
-using Application.Mappers.ContatoMappers;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces.AreaInterfaces;
-using Domain.Interfaces.ContatoInterfaces;
 using Domain.Interfaces.UsuarioInterfaces;
 using Infrastructure.DbContexts;
 using Infrastructure.Repositories;
@@ -41,7 +37,7 @@ builder.Services.AddControllers(options =>
 });
 
 builder.Services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
-builder.Services.AddSingleton<AreaEventConsumer>();
+builder.Services.AddSingleton<UsuarioAtualizadoEventConsumer>();
 
 builder.Services.AddHostedService<ConsumerWorker>();
 
@@ -73,7 +69,6 @@ builder.Services.AddDbContext<OnlyWriteDbContext>(options =>
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAreaRepository, AreaRepository>();
-builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
 
 
 builder.Services.AddTransient<IResponseService, ResponseService>();
@@ -84,21 +79,14 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<IAreaService, AreaService>();
-builder.Services.AddScoped<IContatoService, ContatoService>();
 
 builder.Services.AddScoped<AreaToAreaResponseMapper>();
 
-builder.Services.AddAutoMapper(typeof(CustomMapper<RegistrarRequest, Usuario>));
 var mapperConfig = new MapperConfiguration(cfg =>
 {
     AreaToAreaResponseMapper.ConfigureMapping(cfg, builder.Services);
-    AtualizarContatoRequestToContatoMapper.ConfigureMapping(cfg, builder.Services);
 
-
-    cfg.CreateMap<RegistrarRequest, Usuario>();
     cfg.CreateMap<NovaAreaRequest, Area>();
-    cfg.CreateMap<CadastrarContatoRequest, Contato>();
-    cfg.CreateMap<Contato, ContatoResponse>();
 });
 
 IMapper mapper = mapperConfig.CreateMapper();

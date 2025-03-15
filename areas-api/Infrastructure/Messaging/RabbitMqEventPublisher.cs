@@ -11,21 +11,21 @@ namespace Infrastructure.Messaging
 
         public RabbitMqEventPublisher()
         {
-            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")??"Development";
-            _factory = new ConnectionFactory() { HostName = enviroment.ToUpper()=="DEVELOPMENT"?"localhost":"host.docker.internal" };
+            var hostname = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
+            _factory = new ConnectionFactory() { HostName = hostname };
         }
 
-        public async Task PublishAsync<T>(string queueName, T message, CancellationToken cancellationToken = default)
+        public async Task PublishAsync<T>(string exchangeName, string queueName, T message, CancellationToken cancellationToken = default)
         {
             using var connection = await _factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 
-            await channel.QueueDeclareAsync(queue: queueName,
-                                            durable: true,
-                                            exclusive: false,
-                                            autoDelete: false,
-                                            arguments: null,
-                                            cancellationToken: cancellationToken);
+            //await channel.QueueDeclareAsync(queue: queueName,
+            //                                durable: true,
+            //                                exclusive: false,
+            //                                autoDelete: false,
+            //                                arguments: null,
+            //                                cancellationToken: cancellationToken);
 
             var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
             var properties = new BasicProperties
@@ -34,7 +34,7 @@ namespace Infrastructure.Messaging
                 DeliveryMode = DeliveryModes.Persistent
             };
 
-            await channel.BasicPublishAsync(exchange: "",
+            await channel.BasicPublishAsync(exchange: exchangeName,
                                              routingKey: queueName,
                                              mandatory: false,
                                              properties,

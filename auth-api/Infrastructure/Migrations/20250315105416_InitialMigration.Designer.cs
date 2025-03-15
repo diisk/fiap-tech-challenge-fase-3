@@ -4,6 +4,7 @@ using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(OnlyReadDbContext))]
-    partial class OnlyReadDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250315105416_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,50 +25,13 @@ namespace Infrastructure.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Area", b =>
+            modelBuilder.Entity("Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
-
-                    b.Property<string>("Cidades")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Codigo")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Descricao")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Regiao")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Removed")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("SiglaEstado")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("Updated")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("Codigo");
-
-                    b.ToTable("Areas");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Usuario", b =>
-                {
-                    b.Property<int>("ID")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime(6)");

@@ -50,7 +50,7 @@ namespace Application.Services
 
             foreach (var area in savedAreas)
             {
-                await eventPublisher.PublishAsync("AreaAtualizadaQueue", area, cancellationToken);
+                await eventPublisher.PublishAsync("AreaAtualizadaExchange", "", area, cancellationToken);
             }
 
             return savedAreas;

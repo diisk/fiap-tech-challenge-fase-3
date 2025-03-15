@@ -41,7 +41,8 @@ builder.Services.AddControllers(options =>
 });
 
 builder.Services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
-builder.Services.AddSingleton<AreaEventConsumer>();
+builder.Services.AddSingleton<UsuarioAtualizadoEventConsumer>();
+builder.Services.AddSingleton<AreaAtualizadaEventConsumer>();
 
 builder.Services.AddHostedService<ConsumerWorker>();
 
@@ -88,15 +89,11 @@ builder.Services.AddScoped<IContatoService, ContatoService>();
 
 builder.Services.AddScoped<AreaToAreaResponseMapper>();
 
-builder.Services.AddAutoMapper(typeof(CustomMapper<RegistrarRequest, Usuario>));
 var mapperConfig = new MapperConfiguration(cfg =>
 {
     AreaToAreaResponseMapper.ConfigureMapping(cfg, builder.Services);
     AtualizarContatoRequestToContatoMapper.ConfigureMapping(cfg, builder.Services);
 
-
-    cfg.CreateMap<RegistrarRequest, Usuario>();
-    cfg.CreateMap<NovaAreaRequest, Area>();
     cfg.CreateMap<CadastrarContatoRequest, Contato>();
     cfg.CreateMap<Contato, ContatoResponse>();
 });

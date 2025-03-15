@@ -8,7 +8,6 @@ namespace Infrastructure.DbContexts
 
         public OnlyWriteDbContext(DbContextOptions<OnlyWriteDbContext> options):base(options) {}
         public DbSet<Usuario> UsuarioSet { get; set; }
-        public DbSet<Area> AreaSet { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

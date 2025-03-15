@@ -4,6 +4,7 @@ using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(OnlyReadDbContext))]
-    partial class OnlyReadDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250315110716_InitialMigration")]
+    partial class InitialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,10 +28,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Area", b =>
                 {
                     b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Cidades")
                         .HasColumnType("longtext");
@@ -62,6 +62,44 @@ namespace Infrastructure.Migrations
                     b.ToTable("Areas");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Contato", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("CodigoArea")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Removed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Telefone")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Updated")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CodigoArea");
+
+                    b.ToTable("Contatos");
+                });
+
             modelBuilder.Entity("Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("ID")
@@ -87,6 +125,18 @@ namespace Infrastructure.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Contato", b =>
+                {
+                    b.HasOne("Domain.Entities.Area", "Area")
+                        .WithMany()
+                        .HasForeignKey("CodigoArea")
+                        .HasPrincipalKey("Codigo")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Area");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,16 +1,10 @@
 using API.Middlewares;
-using Application.DTOs.AreaDtos;
 using Application.DTOs.Auth;
-using Application.DTOs.ContatoDtos;
 using Application.Interfaces;
 using Application.Mappers;
-using Application.Mappers.AreaMappers;
-using Application.Mappers.ContatoMappers;
 using Application.Services;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Interfaces.AreaInterfaces;
-using Domain.Interfaces.ContatoInterfaces;
 using Domain.Interfaces.UsuarioInterfaces;
 using Infrastructure.DbContexts;
 using Infrastructure.Repositories;
@@ -25,8 +19,6 @@ using System.Reflection;
 using System.Text;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
-using API.Consumers;
-using API.Workers;
 using Domain.Interfaces;
 using Infrastructure.Messaging;
 
@@ -41,9 +33,6 @@ builder.Services.AddControllers(options =>
 });
 
 builder.Services.AddSingleton<IEventPublisher, RabbitMqEventPublisher>();
-builder.Services.AddSingleton<AreaEventConsumer>();
-
-builder.Services.AddHostedService<ConsumerWorker>();
 
 builder.Services.AddOpenTelemetry()
     .ConfigureResource(resource => resource
@@ -72,8 +61,6 @@ builder.Services.AddDbContext<OnlyWriteDbContext>(options =>
 }, ServiceLifetime.Scoped);
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IAreaRepository, AreaRepository>();
-builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
 
 
 builder.Services.AddTransient<IResponseService, ResponseService>();
@@ -83,22 +70,10 @@ builder.Services.AddSingleton<IMetricsService, MetricsService>();
 builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
-builder.Services.AddScoped<IAreaService, AreaService>();
-builder.Services.AddScoped<IContatoService, ContatoService>();
-
-builder.Services.AddScoped<AreaToAreaResponseMapper>();
-
 builder.Services.AddAutoMapper(typeof(CustomMapper<RegistrarRequest, Usuario>));
 var mapperConfig = new MapperConfiguration(cfg =>
 {
-    AreaToAreaResponseMapper.ConfigureMapping(cfg, builder.Services);
-    AtualizarContatoRequestToContatoMapper.ConfigureMapping(cfg, builder.Services);
-
-
     cfg.CreateMap<RegistrarRequest, Usuario>();
-    cfg.CreateMap<NovaAreaRequest, Area>();
-    cfg.CreateMap<CadastrarContatoRequest, Contato>();
-    cfg.CreateMap<Contato, ContatoResponse>();
 });
 
 IMapper mapper = mapperConfig.CreateMapper();

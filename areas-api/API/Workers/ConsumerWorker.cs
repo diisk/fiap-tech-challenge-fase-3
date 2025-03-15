@@ -7,16 +7,16 @@ namespace API.Workers
 {
     public class ConsumerWorker : BackgroundService
     {
-        private readonly AreaEventConsumer _areaEventConsumer;
+        private readonly UsuarioAtualizadoEventConsumer usuarioAtualizadoEventConsumer;
 
-        public ConsumerWorker(AreaEventConsumer areaEventConsumer)
+        public ConsumerWorker(UsuarioAtualizadoEventConsumer usuarioAtualizadoEventConsumer)
         {
-            _areaEventConsumer = areaEventConsumer;
+            this.usuarioAtualizadoEventConsumer = usuarioAtualizadoEventConsumer;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _areaEventConsumer.StartConsumingAsync();
+            await usuarioAtualizadoEventConsumer.StartConsumingAsync();
         }
     }
 }

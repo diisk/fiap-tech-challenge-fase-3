@@ -48,31 +48,5 @@ namespace Application.Services
 
             return retorno;
         }
-
-        public string Logar(string login, string senha)
-        {
-            Usuario? user = usuarioRepository.FindByLogin(login);
-            if (user != null && cryptoService.VerificarSenhaHasheada(senha, user.Senha))
-            {
-                return tokenService.GetToken(new TokenData { Identifier = user.ID.ToString() });
-            }
-            throw new DadosIncorretosException();
-        }
-
-        public async Task<Usuario> RegistrarAsync(Usuario usuario)
-        {
-            usuario.Validate();
-            usuario.Senha = cryptoService.HashearSenha(usuario.Senha);
-
-            Usuario? user = usuarioRepository.FindByLogin(usuario.Login);
-            if (user != null)
-                throw new LoginIndisponivelException();
-
-            var savedUser = usuarioRepository.Save(usuario);
-
-            await eventPublisher.PublishAsync("UsuarioAtualizadoQueue", savedUser, default);
-
-            return savedUser;
-        }
     }
 }

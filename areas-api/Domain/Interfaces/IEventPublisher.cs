@@ -8,6 +8,6 @@ namespace Domain.Interfaces
 {
     public interface IEventPublisher
     {
-        Task PublishAsync<T>(string queueName, T message, CancellationToken cancellationToken = default);
+        Task PublishAsync<T>(string exchangeName, string queueName, T message, CancellationToken cancellationToken = default);
     }
 }

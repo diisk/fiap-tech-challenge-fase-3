@@ -16,7 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
 using Testcontainers.MySql;
-using Application.DTOs.Auth;
 using Application.DTOs;
 using System.Net.Http.Headers;
 

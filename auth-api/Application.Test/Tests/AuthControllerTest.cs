@@ -9,7 +9,6 @@ using Application.Test.Fixtures;
 using Domain.Entities;
 using Domain.Enums.AreaEnums;
 using Domain.Exceptions.AreaExceptions;
-using Domain.Interfaces.AreaInterfaces;
 using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

@@ -8,7 +8,9 @@ namespace Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Area> builder)
         {
-            builder.HasIndex(a=>a.Codigo);
+            builder.HasKey(a => a.ID);
+            builder.Property(a => a.ID).ValueGeneratedNever();
+            builder.HasIndex(a => a.Codigo);
         }
     }
 }

@@ -70,7 +70,7 @@ namespace Application.Services
 
             var savedUser = usuarioRepository.Save(usuario);
 
-            await eventPublisher.PublishAsync("UsuarioAtualizadoQueue", savedUser, default);
+            await eventPublisher.PublishAsync("UsuarioAtualizadoExchange","", savedUser, default);
 
             return savedUser;
         }

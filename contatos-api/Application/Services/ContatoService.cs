@@ -22,7 +22,7 @@ namespace Application.Services
 
             var updatedContato = contatoRepository.Save(contato);
 
-            await eventPublisher.PublishAsync("ContatoAtualizadoQueue", updatedContato, default);
+            await eventPublisher.PublishAsync("ContatoAtualizadoExchange", "", updatedContato, default);
 
             return updatedContato;
         }
@@ -48,7 +48,7 @@ namespace Application.Services
 
             var savedContato = contatoRepository.Save(contato);
 
-            await eventPublisher.PublishAsync("ContatoAtualizadoQueue", savedContato, default);
+            await eventPublisher.PublishAsync("ContatoAtualizadoExchange", "", savedContato, default);
 
             return savedContato;
         }
@@ -61,7 +61,7 @@ namespace Application.Services
                 contato.Remove();
                 contatoRepository.Save(contato);
 
-                await eventPublisher.PublishAsync("ContatoAtualizadoQueue", contato, default);
+                await eventPublisher.PublishAsync("ContatoAtualizadoExchange", "", contato, default);
             }
         }
 

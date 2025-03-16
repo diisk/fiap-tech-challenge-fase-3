@@ -26,7 +26,7 @@ jobs:
       run: dotnet build --no-restore --configuration Release
 
   auth-unit-tests:
-    needs: build
+    needs: auth-build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -44,7 +44,7 @@ jobs:
       run: dotnet test --filter "Category=Unit" --configuration Release --verbosity normal
 
   auth-integration-tests:
-    needs: unit-tests
+    needs: auth-unit-tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -82,7 +82,7 @@ jobs:
       run: dotnet build --no-restore --configuration Release
 
   areas-unit-tests:
-    needs: build
+    needs: areas-build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -100,7 +100,7 @@ jobs:
       run: dotnet test --filter "Category=Unit" --configuration Release --verbosity normal
 
   areas-integration-tests:
-    needs: unit-tests
+    needs: areas-unit-tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -138,7 +138,7 @@ jobs:
       run: dotnet build --no-restore --configuration Release
 
   contatos-unit-tests:
-    needs: build
+    needs: contatos-build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -156,7 +156,7 @@ jobs:
       run: dotnet test --filter "Category=Unit" --configuration Release --verbosity normal
 
   contatos-integration-tests:
-    needs: unit-tests
+    needs: contatos-unit-tests
     runs-on: ubuntu-latest
     defaults:
       run:

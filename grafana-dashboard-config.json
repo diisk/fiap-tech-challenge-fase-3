@@ -490,7 +490,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "contato-metrics"
+              "options": "contatos-metrics"
             },
             "properties": [
               {
@@ -505,7 +505,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "area-metrics"
+              "options": "areas-metrics"
             },
             "properties": [
               {

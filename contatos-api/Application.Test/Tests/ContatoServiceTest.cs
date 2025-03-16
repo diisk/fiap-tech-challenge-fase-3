@@ -263,10 +263,9 @@ namespace Application.Test.Tests
             area.Codigo = 31;
             contato.CodigoArea = area.Codigo;
             contatoRetorno.ID = 1;
+            contatoRetorno.Area = area;
 
-            mockRepository.Setup(repo => repo.Save(contato)).Callback(() => {
-                contato.ID = 1;
-            });
+            mockRepository.Setup(repo => repo.Save(contato)).Returns(contatoRetorno);
             mockAreaService.Setup(service => service.BuscarPorCodigoArea(contato.CodigoArea)).Returns(area);
 
             var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);

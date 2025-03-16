@@ -57,7 +57,9 @@ namespace Application.Test.Tests
             });
             await dbContext.SaveChangesAsync();
 
-            await Utils.ConfigureAuthorization(client);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZGVudGlmaWNhZG9yIjoiMVNxNEdkcUdJTkJaZmtjQk1leFFra2tWL0M4RTMzemVrU0Fva2x3K0VUWT0iLCJuYmYiOjE3NDIxMzE0MTcsImV4cCI6MzMxOTk2ODIxNywiaWF0IjoxNzQyMTMxNDE3fQ.Vb_YTdBvGR6oBNeqkWoPqakPAaBx9vaGrd3mi5tZvXI"
+                );
         }
 
         [Fact]

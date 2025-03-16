@@ -21,6 +21,11 @@ using Application.DTOs;
 using System.Net.Http.Headers;
 using Application.DTOs.ContatoDtos;
 using Docker.DotNet.Models;
+using Application.Interfaces;
+using Infrastructure.Services;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 namespace Application.Test.Tests
 {
@@ -37,7 +42,7 @@ namespace Application.Test.Tests
             client = new CustomWebApplicationFactory(mySqlContainer).CreateClient();
         }
 
-        
+
 
         public async Task DisposeAsync()
         {
@@ -46,7 +51,15 @@ namespace Application.Test.Tests
 
         public async Task InitializeAsync()
         {
+            //IConfigurationRoot configuration = new ConfigurationBuilder()
+            //        .SetBasePath(AppContext.BaseDirectory)
+            //        .AddJsonFile("appsettings.json")
+            //        .Build();
             CryptoService cryptoService = new CryptoService();
+            //IMemoryCache memoryCache = new MemoryCache(new MemoryCacheOptions());
+            //CacheService cacheService = new CacheService(memoryCache);
+            //TokenService tokenService = new TokenService(configuration,cryptoService,cacheService);
+
             await mySqlContainer.StartAsync();
 
             using var scope = new CustomWebApplicationFactory(mySqlContainer).Services.CreateScope();
@@ -57,6 +70,7 @@ namespace Application.Test.Tests
 
             await dbContext.UsuarioSet.AddAsync(new Usuario
             {
+                ID = 1,
                 Login = "teste",
                 Senha = cryptoService.HashearSenha("teste"),
             });
@@ -64,12 +78,14 @@ namespace Application.Test.Tests
             await dbContext.AreaSet.AddRangeAsync(new Area[] {
                 new()
                 {
+                    ID = 1,
                     Codigo = 11,
                     Regiao = RegiaoBrasil.SUDESTE,
                     SiglaEstado = "SP",
                 },
                 new()
                 {
+                    ID = 2,
                     Codigo = 31,
                     Regiao = RegiaoBrasil.SUDESTE,
                     Cidades = "Belo Horizonte;Contagem;Betim;Nova Lima",
@@ -96,7 +112,11 @@ namespace Application.Test.Tests
 
             await dbContext.SaveChangesAsync();
 
-            await Utils.ConfigureAuthorization(client);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer",
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZGVudGlmaWNhZG9yIjoiMVNxNEdkcUdJTkJaZmtjQk1leFFra2tWL0M4RTMzemVrU0Fva2x3K0VUWT0iLCJuYmYiOjE3NDIxMzE0MTcsImV4cCI6MzMxOTk2ODIxNywiaWF0IjoxNzQyMTMxNDE3fQ.Vb_YTdBvGR6oBNeqkWoPqakPAaBx9vaGrd3mi5tZvXI"
+                );
+
+            //await Utils.ConfigureAuthorization(client);
         }
 
         [Fact]
@@ -144,6 +164,7 @@ namespace Application.Test.Tests
         {
             // Arrange
             var contatoAtualizado = new { email = "novoemail@teste.com" };
+            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
             var content = new StringContent(JsonSerializer.Serialize(contatoAtualizado), Encoding.UTF8, "application/json");
 
             // Act
@@ -155,6 +176,7 @@ namespace Application.Test.Tests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Equal(((int)HttpStatusCode.OK), baseResponse!.Status);
             Assert.Equal(contatoAtualizado.email, baseResponse!.Data!.Email);
+
         }
 
         [Fact]

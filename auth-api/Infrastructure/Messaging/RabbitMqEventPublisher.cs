@@ -17,6 +17,9 @@ namespace Infrastructure.Messaging
 
         public async Task PublishAsync<T>(string exchangeName, string queueName, T message, CancellationToken cancellationToken = default)
         {
+            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            if (enviroment.ToUpper() == "DEVELOPMENT") return;
+
             using var connection = await _factory.CreateConnectionAsync();
             using var channel = await connection.CreateChannelAsync();
 

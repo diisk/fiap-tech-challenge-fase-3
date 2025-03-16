@@ -18,6 +18,8 @@ namespace API.Workers
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            if (enviroment.ToUpper() == "DEVELOPMENT") return;
             await usuarioAtualizadoEventConsumer.StartConsumingAsync();
             await areaAtualizadaEventConsumer.StartConsumingAsync();
         }

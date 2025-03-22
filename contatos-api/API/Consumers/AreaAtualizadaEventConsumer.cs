@@ -12,6 +12,7 @@ namespace API.Consumers
     public class AreaAtualizadaEventConsumer
     {
         private const string QUEUE_NAME = "AreaAtualizadaQueue";
+        private const string EXCHANGE_NAME = "AreaAtualizadaExchange";
         private readonly IServiceScopeFactory scopeFactory;
 
         public AreaAtualizadaEventConsumer(IServiceScopeFactory scopeFactory)
@@ -27,11 +28,15 @@ namespace API.Consumers
             var connection = await factory.CreateConnectionAsync();
             var channel = await connection.CreateChannelAsync();
 
+            await channel.ExchangeDeclareAsync(exchange: EXCHANGE_NAME, type: "fanout");
+
             await channel.QueueDeclareAsync(queue: QUEUE_NAME,
                                             durable: true,
                                             exclusive: false,
                                             autoDelete: false,
                                             arguments: null);
+
+            await channel.QueueBindAsync(queue: QUEUE_NAME, exchange: EXCHANGE_NAME, routingKey: "");
 
             var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.ReceivedAsync += async (model, ea) =>
@@ -64,10 +69,11 @@ namespace API.Consumers
 
                     await writeDbContext.SaveChangesAsync();
                 }
+                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 
             await channel.BasicConsumeAsync(queue: QUEUE_NAME,
-                                            autoAck: true,
+                                            autoAck: false,
                                             consumer: consumer);
         }
     }

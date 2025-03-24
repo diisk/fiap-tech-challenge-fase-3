@@ -85,7 +85,7 @@
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisGridShow": true,
-            "axisLabel": "Requisições",
+            "axisLabel": "Requisi\u00e7\u00f5es",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
@@ -172,7 +172,7 @@
           "refId": "A"
         }
       ],
-      "title": "Requisições por Minuto",
+      "title": "Requisi\u00e7\u00f5es por Minuto",
       "type": "timeseries"
     },
     {
@@ -354,7 +354,7 @@
           "useBackend": false
         }
       ],
-      "title": "Requisições por Status",
+      "title": "Requisi\u00e7\u00f5es por Status",
       "type": "piechart"
     },
     {
@@ -422,7 +422,7 @@
           "refId": "A"
         }
       ],
-      "title": "Utilização de CPU (%)",
+      "title": "Utiliza\u00e7\u00e3o de CPU (%)",
       "type": "gauge"
     },
     {
@@ -439,7 +439,7 @@
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "series",
-            "axisLabel": "Memória (MB)",
+            "axisLabel": "Mem\u00f3ria (MB)",
             "axisPlacement": "right",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
@@ -556,7 +556,7 @@
           "refId": "A"
         }
       ],
-      "title": "Consumo de Memória (MB)",
+      "title": "Consumo de Mem\u00f3ria (MB)",
       "type": "timeseries"
     },
     {
@@ -676,8 +676,71 @@
           "refId": "A"
         }
       ],
-      "title": "Frequência de Coleta de Lixo",
+      "title": "Frequ\u00eancia de Coleta de Lixo",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 0,
+        "y": 20
+      },
+      "id": 999,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": true,
+        "showThresholdMarkers": true
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "rabbitmq_queue_messages_ready{queue=\"contato-dlq\"}",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Mensagens na DLQ (contato-dlq)",
+      "type": "gauge"
     }
   ],
   "refresh": "5s",

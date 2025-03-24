@@ -1,4 +1,5 @@
-﻿using Application.Exceptions;
+﻿using Application.Interfaces;
+using Application.Exceptions;
 using Application.Services;
 using Application.Test.Fixtures;
 using Domain.Entities;
@@ -29,11 +30,12 @@ namespace Application.Test.Tests
             //GIVEN
             var mockRepository = new Mock<IContatoRepository>();
             var eventPublisher = new Mock<IEventPublisher>();
-            
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
+
 
             var contato = fixture.ContatoValido;
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<ContatoNaoEncontradoException>(async () => await contatoService.AtualizarContatoAsync(contato));
@@ -48,6 +50,7 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var eventPublisher = new Mock<IEventPublisher>();
             var mockAreaService = new Mock<IAreaService>();
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
 
             var contatoRetorno = fixture.ContatoValido;
@@ -56,7 +59,7 @@ namespace Application.Test.Tests
 
             mockRepository.Setup(repo => repo.FindById(contato.ID)).Returns(contatoRetorno);
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<ValidacaoException>(async () => await contatoService.AtualizarContatoAsync(contato));
@@ -77,6 +80,7 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
 
             var contatoRetorno = fixture.ContatoValido;
@@ -85,7 +89,7 @@ namespace Application.Test.Tests
 
             mockRepository.Setup(repo => repo.FindById(contato.ID)).Returns(contatoRetorno);
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<ValidacaoException>(async () => await contatoService.AtualizarContatoAsync(contato));
@@ -101,6 +105,7 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
 
             var contatoRetorno = fixture.ContatoValido;
@@ -109,7 +114,7 @@ namespace Application.Test.Tests
 
             mockRepository.Setup(repo => repo.FindById(contato.ID)).Returns(contatoRetorno);
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<ValidacaoException>(async () => await contatoService.AtualizarContatoAsync(contato));
@@ -122,6 +127,7 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var eventPublisher = new Mock<IEventPublisher>();
             var mockAreaService = new Mock<IAreaService>();
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contatoEncontrado = fixture.ContatoValido;
             var contato = fixture.ContatoValido;
@@ -132,7 +138,7 @@ namespace Application.Test.Tests
 
             mockRepository.Setup(repo => repo.Save(contato)).Returns(contato);
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN
             var retorno = await contatoService.AtualizarContatoAsync(contato);
@@ -151,12 +157,13 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
 
             var contato = fixture.ContatoValido;
             contato.Nome = nome;
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<ValidacaoException>(async () => await contatoService.CadastrarContatoAsync(contato));
@@ -177,12 +184,12 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
-
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contato = fixture.ContatoValido;
             contato.Email = email;
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<ValidacaoException>(async () => await contatoService.CadastrarContatoAsync(contato));
@@ -198,12 +205,12 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
-
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contato = fixture.ContatoValido;
             contato.Telefone = telefone;
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<ValidacaoException>(async () => await contatoService.CadastrarContatoAsync(contato));
@@ -216,13 +223,13 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var eventPublisher = new Mock<IEventPublisher>();
             var mockAreaService = new Mock<IAreaService>();
-            
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contato = fixture.ContatoValido;
 
-            mockRepository.Setup(repo => repo.FindByCodigoAreaAndTelefone(contato.CodigoArea,contato.Telefone)).Returns(contato);
+            mockRepository.Setup(repo => repo.FindByCodigoAreaAndTelefone(contato.CodigoArea, contato.Telefone)).Returns(contato);
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<ContatoJaCadastradoException>(async () => await contatoService.CadastrarContatoAsync(contato));
@@ -235,13 +242,13 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
-
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contato = fixture.ContatoValido;
 
             mockAreaService.Setup(service => service.BuscarPorCodigoArea(contato.CodigoArea)).Throws<CodigoAreaNaoCadastradoException>();
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.ThrowsAsync<CodigoAreaNaoCadastradoException>(async () => await contatoService.CadastrarContatoAsync(contato));
@@ -254,7 +261,7 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
-
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contato = fixture.ContatoValido;
             var area = areaFixture.AreaValida;
@@ -268,7 +275,7 @@ namespace Application.Test.Tests
             mockRepository.Setup(repo => repo.Save(contato)).Returns(contatoRetorno);
             mockAreaService.Setup(service => service.BuscarPorCodigoArea(contato.CodigoArea)).Returns(area);
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN
             var retorno = await contatoService.CadastrarContatoAsync(contato);
@@ -285,7 +292,7 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
-
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contato = fixture.ContatoValido;
             var contatoSalvo = false;
@@ -296,7 +303,7 @@ namespace Application.Test.Tests
                 contatoSalvo = true;
             });
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN
             await contatoService.ExcluirContatoAsync(contato.ID);
@@ -316,7 +323,7 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
-
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var listaContatos = fixture.ListaContatosValidos;
             var listaFiltrada = new List<Contato>();
@@ -331,7 +338,7 @@ namespace Application.Test.Tests
 
             mockRepository.Setup(repo => repo.FindAll()).Returns(listaContatos);
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN
             var retorno = contatoService.ListarContatos(codigoArea);
@@ -347,11 +354,11 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
-
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contato = fixture.ContatoValido;
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN & THEN
             Assert.Throws<ContatoNaoEncontradoException>(() => contatoService.BuscarPorId(contato.ID));
@@ -364,13 +371,14 @@ namespace Application.Test.Tests
             var mockRepository = new Mock<IContatoRepository>();
             var mockAreaService = new Mock<IAreaService>();
             var eventPublisher = new Mock<IEventPublisher>();
+            var dlqPublisher = new Mock<Infrastructure.Events.IConsultaContatoDlqPublisher>();
 
             var contato = fixture.ContatoValido;
             contato.ID = 1;
 
             mockRepository.Setup(repo => repo.FindById(contato.ID)).Returns(contato);
 
-            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object);
+            var contatoService = new ContatoService(mockRepository.Object, eventPublisher.Object, dlqPublisher.Object);
 
             //WHEN
             var retorno = contatoService.BuscarPorId(contato.ID);

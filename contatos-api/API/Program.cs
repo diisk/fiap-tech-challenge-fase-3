@@ -89,6 +89,8 @@ builder.Services.AddScoped<IContatoService, ContatoService>();
 
 builder.Services.AddScoped<AreaToAreaResponseMapper>();
 
+builder.Services.AddScoped<Infrastructure.Events.IConsultaContatoDlqPublisher, Infrastructure.Events.ConsultaContatoDlqPublisher>();
+
 var mapperConfig = new MapperConfiguration(cfg =>
 {
     AreaToAreaResponseMapper.ConfigureMapping(cfg, builder.Services);

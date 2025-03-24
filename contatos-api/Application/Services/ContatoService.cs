@@ -8,11 +8,13 @@ namespace Application.Services
     {
         private readonly IContatoRepository contatoRepository;
         private readonly IEventPublisher eventPublisher;
+        private readonly Infrastructure.Events.IConsultaContatoDlqPublisher dlqPublisher;
 
-        public ContatoService(IContatoRepository contatoRepository, IEventPublisher eventPublisher)
+        public ContatoService(IContatoRepository contatoRepository, IEventPublisher eventPublisher, Infrastructure.Events.IConsultaContatoDlqPublisher dlqPublisher)
         {
             this.contatoRepository = contatoRepository;
             this.eventPublisher = eventPublisher;
+            this.dlqPublisher = dlqPublisher;
         }
 
         public async Task<Domain.Entities.Contato> AtualizarContatoAsync(Domain.Entities.Contato contato)
@@ -67,9 +69,14 @@ namespace Application.Services
 
         public List<Domain.Entities.Contato> ListarContatos(int? codigoArea = null)
         {
-            if (codigoArea == null) return contatoRepository.FindAll().ToList();
+            var contatos = codigoArea == null
+             ? contatoRepository.FindAll().ToList()
+             : contatoRepository.FindByCodigoArea(codigoArea.Value);
 
-            return contatoRepository.FindByCodigoArea(codigoArea.Value);
+            if (codigoArea.HasValue && contatos.Count == 0)
+                dlqPublisher.PublicarConsultaVaziaAsync(codigoArea.Value);
+             
+            return contatos;
         }
     }
 }

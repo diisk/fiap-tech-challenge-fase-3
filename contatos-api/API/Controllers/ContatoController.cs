@@ -17,6 +17,7 @@ namespace API.Controllers
         private readonly IResponseService responseService;
         private readonly IContatoService contatoService;
         private readonly AtualizarContatoRequestToContatoMapper atualizarContatoRequestToContatoMapper;
+        //private readonly IConsultaContatoDlqPublisher _consultaContatoDlqPublisher;
 
         public ContatoController(IMapper mapper, IResponseService responseService, IContatoService contatoService, AtualizarContatoRequestToContatoMapper atualizarContatoRequestToContatoMapper)
         {
@@ -74,6 +75,7 @@ namespace API.Controllers
         public ActionResult<BaseResponse<ListarContatoResponse>> ListarContatos([FromQuery] int? codigoArea)
         {
             var retorno = contatoService.ListarContatos(codigoArea);
+
             var response = new ListarContatoResponse
             {
                 TotalResultados = retorno.Count,

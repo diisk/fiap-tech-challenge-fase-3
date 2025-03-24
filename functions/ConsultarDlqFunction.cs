@@ -17,7 +17,7 @@ namespace AzureFunctions
         }
 
         [Function("ConsultarDlqFunction")]
-        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "dlq")] HttpRequestData req, string filaName)
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "dlq")] HttpRequestData req, string nomeFila)
         {
             var statusCode = HttpStatusCode.OK;
             var content = " Nenhuma mensagem encontrada na DLQ.";
@@ -42,12 +42,12 @@ namespace AzureFunctions
 
                 _logger.LogInformation(" Procurando mensagens...");
 
-                var result = await channel.BasicGetAsync(filaName, autoAck: true);
+                var result = await channel.BasicGetAsync(nomeFila, autoAck: true);
                 if (result != null)
                 {
                     var body = result.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
-                    content = $"Fila {filaName}:{message}";
+                    content = $"Fila {nomeFila}:{message}";
                 }
 
 

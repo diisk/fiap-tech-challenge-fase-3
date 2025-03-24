@@ -74,7 +74,10 @@ namespace Application.Services
              : contatoRepository.FindByCodigoArea(codigoArea.Value);
 
             if (codigoArea.HasValue && contatos.Count == 0)
+            {
                 dlqPublisher.PublicarConsultaVaziaAsync(codigoArea.Value);
+                throw new ContatoNaoEncontradoException();
+            }
              
             return contatos;
         }

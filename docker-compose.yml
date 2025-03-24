@@ -268,6 +268,21 @@ services:
   #   networks:
   #     - app-network
 
+  functions:
+    build:
+      context: ./functions/
+    image: functions-image
+    ports:
+      - "7071:7071"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - RABBITMQ_HOST=host.docker.internal
+      - CONTATOS_URL=http://host.docker.internal:8000/api/contatos
+    depends_on:
+      - rabbitmq
+    networks:
+      - app-network
+
 volumes:
   grafana_data:
   areas_mysql_data:
